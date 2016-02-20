@@ -16,18 +16,22 @@ app.config(["$routeProvider", function($routeProvider) {
 }]);
 
 app.factory('Wine', function($resource) {
-  return $resource('http://daretodiscover.herokuapp.com/wines/:id',
+  return $resource('https://super-crud.herokuapp.com/wines/:id',
                    { id: '@id'},
-                   {  update: { method: 'PUT'} }
+                   {  update: { method: 'PUT'},
+                      query: { isArray: false } // the super-crud api returns {wines: []}
+                    }
   );
 });
 
 
 app.controller("winesController", function($scope, Wine) {
-  console.log('ok');
+  console.log('ok winesController');
   var updateWines = function() {
       Wine.query(function(data) {
-        $scope.wines = data;
+console.log(data);
+        $scope.wines = data.wines;
+
       }, function() {
         alert('cant get the wines');
       })
