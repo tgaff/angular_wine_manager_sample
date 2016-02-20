@@ -11,7 +11,7 @@
   <!-- Many wines-->
 	<div class="row margin-top-20 wine-container" data-ng-repeat='wine in winesC.wines | filter:wineSearch'>
 		<div class="col-sm-3">
-      <img src="{{wine.picture}}" class="img-responsive" />
+      <img src="{{wine.image}}" class="img-responsive" />
 		</div>
 		<div class="col-sm-9">
 			<div class="margin-top-20">
@@ -39,7 +39,7 @@
 			  {{ wine.description }}
       </div>
 			<div class="margin-top-20">
-        <a class="btn btn-default" href="#/edit/{{wine.id}}">Edit Wine</a>
+        <a class="btn btn-default" href="#/edit/{{wine._id}}">Edit Wine</a>
 			</div>
 		</div>
 	</div>

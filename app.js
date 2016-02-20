@@ -18,7 +18,7 @@ app.config(["$routeProvider", function($routeProvider) {
 
 app.factory('Wine', function($resource) {
   return $resource('https://super-crud.herokuapp.com/wines/:id',
-                   { id: '@id'},
+                   { id: '@_id'},
                    {  update: { method: 'PUT'},
                       query: { isArray: false } // the super-crud api returns {wines: []}
                     }
@@ -53,7 +53,7 @@ function WinesController(Wine) {
         alert('failed to save');
       });
   }
-  
+
   // on initialization
   updateWines();
 
@@ -61,7 +61,7 @@ function WinesController(Wine) {
 
 
 app.controller("wineController", function($scope, $routeParams, $location, Wine) {
-
+  console.log('wineController');
   $scope.wineID = $routeParams.id;
   var getWine = function() {
     console.log('getting wine ', $scope.wineID);
