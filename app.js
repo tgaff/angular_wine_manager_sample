@@ -1,5 +1,7 @@
 var app = angular.module("wineManager", ['ngRoute', 'ngAnimate', 'ngResource'])
-  .controller('WinesController', WinesController);
+  .controller('WinesController', WinesController)
+  .controller('WineController', WineController)
+  .factory('Wine', Wine);
 
 app.config(["$routeProvider", function($routeProvider) {
     $routeProvider
@@ -9,21 +11,22 @@ app.config(["$routeProvider", function($routeProvider) {
         })
         .when("/edit/:id", {
           templateUrl: "templates/edit.html",
-          controller: 'wineController'
+          controller: 'WineController as vm'
         })
         .otherwise({
             redirectTo: "/"
         });
 }]);
 
-app.factory('Wine', function($resource) {
-  return $resource('https://super-crud.herokuapp.com/wines/:id',
+Wine.$inject = ['$resource'];
+function Wine(   $resource  ) {
+    return $resource('https://super-crud.herokuapp.com/wines/:id',
                    { id: '@_id'},
                    {  update: { method: 'PUT'},
                       query: { isArray: false } // the super-crud api returns {wines: []}
                     }
   );
-});
+}
 
 
 WinesController.$inject = ['Wine'];
@@ -59,23 +62,31 @@ function WinesController(Wine) {
 
 }
 
+WineController.$inject = [ '$routeParams', '$location', 'Wine'];
+function WineController(    $routeParams,   $location,   Wine ) {
+  console.log('WineController');
+  var vm = this;
+  vm.wineID = $routeParams.id;
 
-app.controller("wineController", function($scope, $routeParams, $location, Wine) {
-  console.log('wineController');
-  $scope.wineID = $routeParams.id;
-  var getWine = function() {
-    console.log('getting wine ', $scope.wineID);
-    Wine.get({ id: $scope.wineID }, function(wine) {
-        $scope.wine = wine;
+  vm.updateWine = updateWine;
+  vm.deleteWine = deleteWine;
+  getWine();
+
+
+
+  function getWine() {
+    console.log('getting wine ', vm.wineID);
+    Wine.get({ id: vm.wineID }, function(wine) {
+        vm.wine = wine;
       }, function() {
-        alert('failed to get wine with id ', $scope.wineID);
+        alert('failed to get wine with id ', vm.wineID);
       }
     );
-  };
+  }
 
-  $scope.updateWine = function() {
+  function updateWine() {
     console.log('updateWine()');
-    Wine.update( { id: $scope.wineID }, $scope.wine,
+    Wine.update( { id: vm.wineID }, vm.wine,
       function(wine) {
         console.log('it worked');
         $location.path('/');
@@ -83,13 +94,14 @@ app.controller("wineController", function($scope, $routeParams, $location, Wine)
       }, function() {
         alert('failed to save');
       });
-  };
-  $scope.deleteWine = function() {
-    console.log('destroy ', $scope.wineID);
-    Wine.delete({id: $scope.wineID}, function() {
+  }
+
+  function deleteWine() {
+    console.log('destroy ', vm.wineID);
+    Wine.delete({id: vm.wineID}, function() {
       console.log('destroyed');
       $location.path('/');
     });
-  };
-  getWine();
-});
+  }
+
+}
