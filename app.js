@@ -1,10 +1,11 @@
-var app = angular.module("wineManager", ['ngRoute', 'ngAnimate', 'ngResource']);
+var app = angular.module("wineManager", ['ngRoute', 'ngAnimate', 'ngResource'])
+  .controller('WinesController', WinesController);
 
 app.config(["$routeProvider", function($routeProvider) {
     $routeProvider
         .when("/", {
             templateUrl: "templates/index.html",
-            controller: "winesController"
+            controller: "WinesController as winesC"
         })
         .when("/edit/:id", {
           templateUrl: "templates/edit.html",
@@ -25,32 +26,38 @@ app.factory('Wine', function($resource) {
 });
 
 
-app.controller("winesController", function($scope, Wine) {
-  console.log('ok winesController');
-  var updateWines = function() {
-      Wine.query(function(data) {
-console.log(data);
-        $scope.wines = data.wines;
+WinesController.$inject = ['Wine'];
+function WinesController(Wine) {
+  var vm = this;
+  console.log('ok WinesController');
+  vm.createWine = createWine;
 
-      }, function() {
-        alert('cant get the wines');
-      })
+
+  var updateWines = function() {
+    Wine.query(function(data) {
+      console.log(data);
+      vm.wines = data.wines;
+
+    }, function() {
+      alert('cant get the wines');
+    });
   };
 
 
-  $scope.createWine = function() {
-    console.log($scope.newWine);
-    Wine.save($scope.newWine, function(data) {
+  function createWine() {
+    console.log(vm.newWine);
+    Wine.save(vm.newWine, function(data) {
         console.log('received: ', data);
         updateWines();
       }, function() {
         alert('failed to save');
       });
-  };
+  }
+  
   // on initialization
   updateWines();
 
-});
+}
 
 
 app.controller("wineController", function($scope, $routeParams, $location, Wine) {

@@ -9,7 +9,7 @@
   </div>
 
   <!-- Many wines-->
-	<div class="row margin-top-20 wine-container" data-ng-repeat='wine in wines | filter:wineSearch'>
+	<div class="row margin-top-20 wine-container" data-ng-repeat='wine in winesC.wines | filter:wineSearch'>
 		<div class="col-sm-3">
       <img src="{{wine.picture}}" class="img-responsive" />
 		</div>
@@ -113,5 +113,3 @@
 	</div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <!--/Add Wine Modal-->
-
-
